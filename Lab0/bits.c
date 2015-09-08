@@ -12,7 +12,7 @@
  * it's not good practice to ignore compiler warnings, but in this
  * case it's OK.  
  */
-
+#include <stdio.h>
 #if 0
 /*
  * Instructions to Students:
@@ -191,7 +191,8 @@ int bitXor(int x, int y) {
  *   Rating: 2
  */
 
- // TODO: Change bit stream to 0 or 1
+ // TODO: Change bit stream to True or False
+ // 010010 --> True, 00000 --> False
 int isNotEqual(int x, int y) {
   return x ^ y;
 }
@@ -228,8 +229,13 @@ int copyLSB(int x) {
  *   Max ops: 20
  *   Rating: 3 
  */
+ // TODO: mask is incorrect for shift by 0
 int logicalShift(int x, int n) {
-  int mask = ~(0x80 >> n);
+  // to implement logical shift, and with mask 
+  // which has n 0s followed by w-n 1s.
+  int mask = ~((0x01 << 31) >> n);
+  printf("%s\n", "mask = ");
+  printf("%d\n", mask);
   return (x >> n) & mask;
 }
 /*
@@ -239,8 +245,45 @@ int logicalShift(int x, int n) {
  *   Max ops: 42
  *   Rating: 4
  */
+ // TODO: Works for upto 16 bits, but fails for 32 bit 
+ // edge cases. 
 int bitCount(int x) {
-  return 2;
+  int mask1 = (0x55 << 24) | 0x55;
+  int mask2 = mask1 | (0x55 << 16);
+  int mask3 = mask2 | (0x55 << 8);
+  printf("%x\n first mask", mask3);
+
+  int mask4 = (0x33 << 24) | 0x33;
+  int mask5 = mask4 | (0x33 << 16);
+  int mask6 = mask5 | (0x33 << 8);
+  printf("%x\n second mask", mask6);
+
+  int mask7 = (0x0F << 24) | 0x0F;
+  int mask8 = mask7 | (0x0F << 16);
+  int mask9 = mask8 | (0x0F << 8);
+  printf("%x\n third mask", mask9);
+
+  int mask10 = (0x00 << 24) | 0xFF;
+  int mask11 = mask10 | (0xFF << 16);
+  int mask12 = mask11 | (0x00 << 8);
+  printf("%x\n fourth mask", mask12);
+
+  int mask13 = (0x00 << 24) | 0xFF;
+  int mask14 = mask13 | (0x00 << 16);
+  int mask15 = mask14 | (0xFF << 8);
+  printf("%x\n fifth mask", mask15);
+
+  int result =(x & mask3) + ((x >> 1) & mask3);
+  printf("%x\n", result);
+  result = (result & mask6) + ((result >> 2) & mask6);
+  printf("%x\n", result);
+  result = (result & mask9) + ((result >> 4) & mask9);
+  printf("%x\n", result);
+  result = (result & mask12) + ((result >> 8) & mask12);
+  printf("%x\n", result);
+  result = (result & mask15) + ((result >> 16) & mask15);
+  printf("%x\n", result);
+  return result;
 }
 /* 
  * bang - Compute !x without using !
@@ -270,7 +313,7 @@ int leastBitPos(int x) {
  *   Rating: 1
  */
 int tmax(void) {
-  return 2;
+  return ~(0x80 << 24);
 }
 /* 
  * isNonNegative - return 1 if x >= 0, return 0 otherwise 
@@ -300,8 +343,16 @@ int isGreater(int x, int y) {
  *   Max ops: 15
  *   Rating: 2
  */
+ // TODO: fails for the case n = 0 because we are still
+ // adding, when adder should be 0 for n = 0.
 int divpwr2(int x, int n) {
-    return 2;
+    int msb = (((0x01 << 31) & x) >> 31) & 0x01;
+    printf("msb: %d\n", msb);
+    int mask = 0x01 << msb;
+    printf("mask: %d\n", mask);
+    int adder = mask + ((0xFF << 24) >> 24);
+    printf("adder: %d\n", adder);
+    return (x >> n) + adder;
 }
 /* 
  * absVal - absolute value of x
