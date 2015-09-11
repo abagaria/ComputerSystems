@@ -7,7 +7,7 @@
  *          This is the file you will hand in to your instructor.
  *
  * WARNING: Do not include the <stdio.h> header; it confuses the dlc
- * compiler. You can still use printf for debugging without including
+ * compiler. You can still use //printf for debugging without including
  * <stdio.h>, although you might get a compiler warning. In general,
  * it's not good practice to ignore compiler warnings, but in this
  * case it's OK.  
@@ -194,7 +194,9 @@ int bitXor(int x, int y) {
  // TODO: Change bit stream to True or False
  // 010010 --> True, 00000 --> False
 int isNotEqual(int x, int y) {
-  return x ^ y;
+  // the 2 bang operators help change the bit stream to 
+  // a boolean
+  return !!(x ^ y);
 }
 
 /* 
@@ -229,13 +231,14 @@ int copyLSB(int x) {
  *   Max ops: 20
  *   Rating: 3 
  */
+
  // TODO: mask is incorrect for shift by 0
 int logicalShift(int x, int n) {
   // to implement logical shift, and with mask 
   // which has n 0s followed by w-n 1s.
-  int mask = ~((0x01 << 31) >> n);
-  printf("%s\n", "mask = ");
-  printf("%d\n", mask);
+  int mask = ~(((0x01 << 31) >> n) << 1);
+  //printf("%s\n", "mask = ");
+  //printf("%d\n", mask);
   return (x >> n) & mask;
 }
 /*
@@ -248,6 +251,8 @@ int logicalShift(int x, int n) {
  // TODO: Works for upto 16 bits, but fails for 32 bit 
  // edge cases. 
 int bitCount(int x) {
+
+  x = 0xFFFFFFFF;
   int mask1 = (0x55 << 24) | 0x55;
   int mask2 = mask1 | (0x55 << 16);
   int mask3 = mask2 | (0x55 << 8);
@@ -282,7 +287,8 @@ int bitCount(int x) {
   result = (result & mask12) + ((result >> 8) & mask12);
   printf("%x\n", result);
   result = (result & mask15) + ((result >> 16) & mask15);
-  printf("%x\n", result);
+  printf("%s\n", "RESULT:");
+  printf("%d\n", result);
   return result;
 }
 /* 
@@ -304,7 +310,7 @@ int bang(int x) {
  *   Rating: 2 
  */
 int leastBitPos(int x) {
-  return 2;
+  return x & 0x01;
 }
 /* 
  * TMax - return maximum two's complement integer 
@@ -347,11 +353,11 @@ int isGreater(int x, int y) {
  // adding, when adder should be 0 for n = 0.
 int divpwr2(int x, int n) {
     int msb = (((0x01 << 31) & x) >> 31) & 0x01;
-    printf("msb: %d\n", msb);
+    // //printf("msb: %d\n", msb);
     int mask = 0x01 << msb;
-    printf("mask: %d\n", mask);
+    // //printf("mask: %d\n", mask);
     int adder = mask + ((0xFF << 24) >> 24);
-    printf("adder: %d\n", adder);
+    // //printf("adder: %d\n", adder);
     return (x >> n) + adder;
 }
 /* 
