@@ -252,43 +252,29 @@ int logicalShift(int x, int n) {
  // edge cases. 
 int bitCount(int x) {
 
-  x = 0xFFFFFFFF;
-  int mask1 = (0x55 << 24) | 0x55;
-  int mask2 = mask1 | (0x55 << 16);
-  int mask3 = mask2 | (0x55 << 8);
-  printf("%x\n first mask", mask3);
+  int mask1 = (0x00 << 24) | 0xFF;
+  int mask2 = mask1 | (0xFF << 16);
+  int secondMask = mask2 | (0x00 << 8);
 
-  int mask4 = (0x33 << 24) | 0x33;
-  int mask5 = mask4 | (0x33 << 16);
-  int mask6 = mask5 | (0x33 << 8);
-  printf("%x\n second mask", mask6);
+  int mask3 = (0x01 << 24) | 0x01;
+  int mask4 = mask3 | (0x01 << 16);
+  int firstMask = mask4 | (0x01 << 8);
 
-  int mask7 = (0x0F << 24) | 0x0F;
-  int mask8 = mask7 | (0x0F << 16);
-  int mask9 = mask8 | (0x0F << 8);
-  printf("%x\n third mask", mask9);
+  int mask5 = (0x00 << 24) | 0xFF;
+  int mask6 = mask5 | (0x00 << 16);
+  int thirdMask = mask6 | (0xFF << 8);
 
-  int mask10 = (0x00 << 24) | 0xFF;
-  int mask11 = mask10 | (0xFF << 16);
-  int mask12 = mask11 | (0x00 << 8);
-  printf("%x\n fourth mask", mask12);
+  int result = (x & firstMask) +
+               ((x >> 1) & firstMask) +
+               ((x >> 2) & firstMask) +
+               ((x >> 3) & firstMask) +
+               ((x >> 4) & firstMask) +
+               ((x >> 5) & firstMask) +
+               ((x >> 6) & firstMask) +
+               ((x >> 7) & firstMask);
+  result = (result & secondMask) + ((result >> 8) & secondMask);
+  result = (result & thirdMask) + ((result >> 16) & thirdMask);
 
-  int mask13 = (0x00 << 24) | 0xFF;
-  int mask14 = mask13 | (0x00 << 16);
-  int mask15 = mask14 | (0xFF << 8);
-  printf("%x\n fifth mask", mask15);
-
-  int result =(x & mask3) + ((x >> 1) & mask3);
-  printf("%x\n", result);
-  result = (result & mask6) + ((result >> 2) & mask6);
-  printf("%x\n", result);
-  result = (result & mask9) + ((result >> 4) & mask9);
-  printf("%x\n", result);
-  result = (result & mask12) + ((result >> 8) & mask12);
-  printf("%x\n", result);
-  result = (result & mask15) + ((result >> 16) & mask15);
-  printf("%s\n", "RESULT:");
-  printf("%d\n", result);
   return result;
 }
 /* 
@@ -299,7 +285,14 @@ int bitCount(int x) {
  *   Rating: 4 
  */
 int bang(int x) {
-  return 2;
+  // printf("input x is %d\n", x);
+  int halve16 = x | (x >> 16);
+
+  int halve8 = halve16 | (halve16 >> 8);
+  int halve4 = halve8 | (halve8 >> 4);
+  int halve2 = halve4 | (halve4 >> 2);
+  int result = halve2 | (halve2 >> 1);
+  return ~(result) & 0x01;
 }
 /* 
  * leastBitPos - return a mask that marks the position of the
@@ -310,7 +303,8 @@ int bang(int x) {
  *   Rating: 2 
  */
 int leastBitPos(int x) {
-  return x & 0x01;
+  int additiveInv = ~x + 1;
+  return x & additiveInv;
 }
 /* 
  * TMax - return maximum two's complement integer 
@@ -329,7 +323,8 @@ int tmax(void) {
  *   Rating: 3
  */
 int isNonNegative(int x) {
-  return 2;
+  int msb = (x >> 31) & 0x01;
+  return !msb;
 }
 /* 
  * isGreater - if x > y  then return 1, else return 0 
@@ -339,7 +334,11 @@ int isNonNegative(int x) {
  *   Rating: 3
  */
 int isGreater(int x, int y) {
-  return 2;
+  int addInvY = ~y + 1;
+  int sum = x + addInvY;
+  int msb = (sum >> 31) & 0x01;
+  // return (!msb) & (!!(sum ^ 0x00)) & (msbx);
+  return 3;
 }
 /* 
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
@@ -369,7 +368,11 @@ int divpwr2(int x, int n) {
  *   Rating: 4
  */
 int absVal(int x) {
-  return 2;
+  int sign = (((x >> 31) & 0x01) << 31) >> 31; 
+  printf("%x\n", sign);
+  int additiveInv = ~x + 1;
+  printf("%x\n", additiveInv);
+  return (x | sign) & (sign & additiveInv);
 }
 /* 
  * addOK - Determine if can compute x+y without overflow
@@ -380,5 +383,14 @@ int absVal(int x) {
  *   Rating: 3
  */
 int addOK(int x, int y) {
-  return 2;
+  int msbx = (x >> 31) & 0x01;
+  int msby = (x >> 31) & 0x01;
+  int sum  = (x + y);
+  int msbsum = (sum >> 31) & 0x01;
+
+  int msbxEqMsby = !(msbx ^ msby);
+  int msbxEqMsbSum = !(msbx ^ msbsum ^ msby);
+
+  return (msbxEqMsbSum & msbxEqMsby);
+
 }
