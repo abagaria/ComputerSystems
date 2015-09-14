@@ -334,9 +334,11 @@ int isNonNegative(int x) {
 int isGreater(int x, int y) {
   int addInvY = ~y + 1;
   int sum = x + addInvY;
-  int msb = (sum >> 31) & 0x01;
-  // return (!msb) & (!!(sum ^ 0x00)) & (msbx);
-  return 3;
+  int signx = (x >> 31) & 0x01;
+  int signy = (y >> 31) & 0x01;
+  int sumMsb = !!((sum >> 31) & 0x01);
+  int signXPosyNeg = !!(~signx & signy);
+  return signXPosyNeg | (!sumMsb & (~signx | signy) & !!sum);
 }
 /*
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
@@ -346,16 +348,13 @@ int isGreater(int x, int y) {
  *   Max ops: 15
  *   Rating: 2
  */
- // TODO: fails for the case n = 0 because we are still
- // adding, when adder should be 0 for n = 0.
+ 
 int divpwr2(int x, int n) {
-    int msb = (((0x01 << 31) & x) >> 31) & 0x01;
-    // //printf("msb: %d\n", msb);
-    int mask = 0x01 << msb;
-    // //printf("mask: %d\n", mask);
-    int adder = mask + ((0xFF << 24) >> 24);
-    // //printf("adder: %d\n", adder);
-    return (x >> n) + adder;
+    int roundUp =  (x + ((1 << n) + ~0)) >> n;
+    int roundDown = x >> n;
+    int msb = x >> 31;
+
+    return (roundDown | msb) & (roundUp | ~msb);
 }
 /*
  * absVal - absolute value of x
@@ -366,11 +365,11 @@ int divpwr2(int x, int n) {
  *   Rating: 4
  */
 int absVal(int x) {
-  int sign = (((x >> 31) & 0x01) << 31) >> 31; 
-  printf("%x\n", sign);
+  int sign = x >> 31; 
   int additiveInv = ~x + 1;
-  printf("%x\n", additiveInv);
-  return (x | sign) & (sign & additiveInv);
+  int ifNeg = additiveInv | ~sign;
+  int ifPos = x | sign;
+  return ifPos & ifNeg;
 }
 /*
  * addOK - Determine if can compute x+y without overflow
@@ -382,13 +381,14 @@ int absVal(int x) {
  */
 int addOK(int x, int y) {
   int msbx = (x >> 31) & 0x01;
-  int msby = (x >> 31) & 0x01;
+  int msby = (y >> 31) & 0x01;
   int sum  = (x + y);
   int msbsum = (sum >> 31) & 0x01;
 
-  int msbxEqMsby = !(msbx ^ msby);
-  int msbxEqMsbSum = !(msbx ^ msbsum ^ msby);
+  int signsEqual = !(msbx ^ msby);
+  int signxSumEqual = !(msbx ^ msbsum);
+  int signySumEqual = !(msby ^ msbsum);
 
-  return (msbxEqMsbSum & msbxEqMsby);
+  return !signsEqual | (signxSumEqual & signySumEqual);
 
 }
