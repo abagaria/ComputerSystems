@@ -191,8 +191,6 @@ int bitXor(int x, int y) {
  *   Rating: 2
  */
 
- // TODO: Change bit stream to True or False
- // 010010 --> True, 00000 --> False
 int isNotEqual(int x, int y) {
   // the 2 bang operators help change the bit stream to 
   // a boolean
@@ -232,7 +230,6 @@ int copyLSB(int x) {
  *   Rating: 3
  */
 
- // TODO: mask is incorrect for shift by 0
 int logicalShift(int x, int n) {
   // to implement logical shift, and with mask
   // which has n 0s followed by w-n 1s.
@@ -246,8 +243,7 @@ int logicalShift(int x, int n) {
  *   Max ops: 42
  *   Rating: 4
  */
- // TODO: Works for upto 16 bits, but fails for 32 bit
- // edge cases.
+ 
 int bitCount(int x) {
 
   int mask1 = (0x00 << 24) | 0xFF;
@@ -389,6 +385,6 @@ int addOK(int x, int y) {
   int signxSumEqual = !(msbx ^ msbsum);
   int signySumEqual = !(msby ^ msbsum);
 
-  return !(signsEqual) | (signxSumEqual & signySumEqual);
+  return (!signsEqual) | (signxSumEqual & signySumEqual);
 
 }
