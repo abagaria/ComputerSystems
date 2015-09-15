@@ -389,6 +389,6 @@ int addOK(int x, int y) {
   int signxSumEqual = !(msbx ^ msbsum);
   int signySumEqual = !(msby ^ msbsum);
 
-  return !signsEqual | (signxSumEqual & signySumEqual);
+  return !(signsEqual) | (signxSumEqual & signySumEqual);
 
 }
