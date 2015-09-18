@@ -1,0 +1,51 @@
+1. The program seg-faults
+
+2. We are in file ../stdlib/strtol_l.c and line 297
+
+3. We looked at the stack frame had a call to atoi. We then typed 'up 2' to look 
+at the variables at the time of that function call. To look at the value of the 
+argument passed to atoi, we typed 'print argv[1]'
+
+4. $1 = 0x00 was printed (null ptr).
+
+5. $2 = 0x7fffffffe54c "5" is printed when repeating with 'r 5'
+
+6. On rerunning w/o restarting, we get the value of 5 in register $3. argc = 2. 
+On printing the array argv, we get the following output: 
+{0x7fffffffe50e "/mnt/home/hseaman/courses/cs105/ComputerSystems/Lab1/problem1", 
+  0x7fffffffe54c "5"}
+
+ The 0th argument is the file name, the 1st argument is the value passed as 
+ argument to the program from the terminal.
+ The value of first argument passed to the program from the terminal stayed 
+ unchanged in memory from when we ran 'r 5.' The second argument in argv is the
+ null pointer from when we ran the program a second time without any arguments. 
+
+7. We wound up in the stdlib function atoi.c (line 26)
+
+8. Using list in main prints the C program instructions around where the 
+current instruction is. When we hit the return key, then gdb tells us that 
+Line number 20 is out of range.
+
+9. The return key appears to repeat the last command (in this case, s).
+
+10. result is null, while a and b are not defined in the current context (not
+in scope).
+
+11. 4 lines shown to us: 
+	6	    int result = a;
+	(gdb) s
+	5	    int i = 0;
+	(gdb) 
+	8		result += a;
+	(gdb) 
+	9		a -= b;
+
+	The declarations/initializations are out of order from what we were
+	expecting. It is because of using optimiser o1.
+
+12. The program stops at the while(i < 256) instruction. Note that the compiler 
+displays the instructions in a different order because of the use of 
+optimizer o2 instead of o1.
+
+13. 
