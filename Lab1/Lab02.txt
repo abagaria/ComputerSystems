@@ -86,7 +86,11 @@ Problem 2
 3. It prints the same number, but in reverse order. This is probably a 
 consequence of the direction in which the stack grows. 
 4. puzzle1 was our favorite constant, pi.
-5. 
+5. The 7th and 8th decimal places are off from the exact value of pi (as seen 
+in the internets). This is probably because of lack of absolute precision while 
+performing floating point operations on computers. 
+6. 
+7. YES
 
 
 
