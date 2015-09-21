@@ -350,12 +350,12 @@ int isGreater(int x, int y) {
  // adding, when adder should be 0 for n = 0.
 int divpwr2(int x, int n) {
     int msb = (((0x01 << 31) & x) >> 31) & 0x01;
-    // //printf("msb: %d\n", msb);
+    printf("msb: %d\n", msb);
     int mask = 0x01 << msb;
-    // //printf("mask: %d\n", mask);
+    printf("mask: %d\n", mask);
     int adder = mask + ((0xFF << 24) >> 24);
-    // //printf("adder: %d\n", adder);
-    return (x >> n) + adder;
+    printf("adder: %d\n", adder);
+    return (x + adder) >> n;
 }
 /*
  * absVal - absolute value of x
