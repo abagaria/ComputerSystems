@@ -4,11 +4,13 @@
 
 3. We looked at the stack frame had a call to atoi. We then typed 'up 2' to look 
 at the variables at the time of that function call. To look at the value of the 
-argument passed to atoi, we typed 'print argv[1]'
+argument passed to atoi, we typed 'print argv[1]'. Yes, we can see that the 
+argument passed to atoi was the null ptr.
+
 
 4. $1 = 0x00 was printed (null ptr).
 
-5. $2 = 0x7fffffffe54c "5" is printed when repeating with 'r 5'
+5. -1835 is printed when entering 'r 5'
 
 6. On rerunning w/o restarting, we get the value of 5 in register $3. argc = 2. 
 On printing the array argv, we get the following output: 
@@ -46,6 +48,48 @@ in scope).
 
 12. The program stops at the while(i < 256) instruction. Note that the compiler 
 displays the instructions in a different order because of the use of 
-optimizer o2 instead of o1.
+optimizer o2 instead of o1. This could be because the check for the while 
+condition gets executed after running the commands inside the while loop. This
+is what happpens when the compiler optimises the C code into assembly.
 
-13. 
+13. 0x00000000004004ca is the address of the instruction that makes the function
+call to atoi. 0x00000000004004f7 is the address of the instruction that calls 
+printf.
+
+14. 0x00000000004004e7 is the address of the instruction to the loop_while 
+function. It is the line with the jne instruction. 
+
+15. 
+
+(gdb) p/x 42
+$1 = 0x2a
+(gdb) 
+$2 = 0x2a
+(gdb) p 0x2f
+$3 = 47
+
+16. The constant in the sub instruction is 0x10 or 16. This is the value of b
+passed to loop_while from main. 
+
+17. The call to loop_while was optimized out. The optimized program moves the 
+program counter around rather than making a function call. 
+
+18. Wow!
+
+19. The initializations of i and result were swapped. 
+
+Problem 2
+==========
+
+1. The decimal value of puzzle1, i.e, 1078530011 is printed. 
+2. 0x40490fdb was printed with p/x
+3. It prints the same number, but in reverse order. This is probably a 
+consequence of the direction in which the stack grows. 
+4. puzzle1 was our favorite constant, pi.
+5. 
+
+
+
+
+
+
