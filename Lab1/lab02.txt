@@ -94,8 +94,47 @@ performing floating point operations on computers.
 8. It is correct to 15 decimal places, but at the 16th place the value is 1 
 instead of the correct value 2. This is also due to the lack of absolute
 precision in numerical representation.
-9.
+9. It is the sequence of chars spelling out "Was that really so hard?"
+10. No because the output at the breakpoint specifies the input to the
+call to fix_array. It says that the input variable a_size is 10. It
+displays with the following syntax: a_size=a_size@entry=10.
+11. The value of a is (int *) 0x602010 according to gdb.
+12. After 6 steps the program is in the hmc_pomona_fix function and a
+is out of scope. We are not able to display a while in this function call.
+13. After a seventh step we are able to display a. Its value has not changed
+after finishing the call to hmc_pomona_fix. This is the behavior we expect
+based on our understanding of the code.
+14. Using next instead of step allows us to go back to the beginning of
+the for-loop rather than stepping through hmc_pomona_fix.
+15. Using next takes us to the function call to hmc_pomona_fix as we
+expect. This is the same behavior as if we used step. The value of a
+is now 0x602014 which reflect the fact that a has been incremented.
+16. gdb tells us that the pointer *a is pointing at the value 1. This
+makes sense since 1 is value that a is currently pointing to.
+17. We are at the beginning of the for loop on line 23. gdb outputs this as
+23	    for (i = 0;  i < a_size;  i++, a++) {
+18. Now a is 0x60202c since it has been further incremented.
+19. The value that a is pointing to is now 13.
 
+PART 3
+=======
+
+1. The output is 1 47 2 42 3. Notice that 42 and 47 have been swapped.
+2. The program stops at line 29 in problem2.c
+3. The program stops at line 35 in problem2.c
+4. No.
+5. 0x00000000004006b0 is the address of the breakpoint on line 35. The assembly
+instruction corresponds to the part of the for loop in which i is set to 1.
+6. info tells us that we set a breakpoint at line 36.
+7. They are arrays containing 0s.
+8. The program stops at line 36 (not surprisingly)
+9. rip, eflags, cs, ss, and ds were not covered class (we think). 
+10. None of the flags that we discussed in class are set. Only flags PF 
+(Parity flag), IF (Interrupt Flag) and the ZF (Zero Flag) are set. Our guess is
+that main+72 (the lea instruction) results in a zero, which in turn causes the 
+ZF to be set. 
+11. 
+12. 
 
 
 
