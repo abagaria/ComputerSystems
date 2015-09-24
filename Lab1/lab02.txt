@@ -89,8 +89,12 @@ consequence of the direction in which the stack grows.
 5. The 7th and 8th decimal places are off from the exact value of pi (as seen 
 in the internets). This is probably because of lack of absolute precision while 
 performing floating point operations on computers. 
-6. 
-7. YES
+6. This is the number e using in Euler's Formula.
+7. No not really
+8. It is correct to 15 decimal places, but at the 16th place the value is 1 
+instead of the correct value 2. This is also due to the lack of absolute
+precision in numerical representation.
+9.
 
 
 
