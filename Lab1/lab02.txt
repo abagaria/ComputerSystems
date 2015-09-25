@@ -132,9 +132,42 @@ instruction corresponds to the part of the for loop in which i is set to 1.
 10. None of the flags that we discussed in class are set. Only flags PF 
 (Parity flag), IF (Interrupt Flag) and the ZF (Zero Flag) are set. Our guess is
 that main+72 (the lea instruction) results in a zero, which in turn causes the 
-ZF to be set. 
-11. 
-12. 
+ZF to be set. We read that the zero flag is reset to 0 when the an previously 
+executed instruciton does not result in 0. This would also explain why the ZF is
+set.
+11. It appears that the value of this register is 0. When we print in hex we
+get 0x0 as expected. The lower 32 bits of the register are also 0 as expected.
+12. We see that the value stored in $rip is first 16 instructions for the 
+fix_array function. The register $rip cannot hold the full set of instructions
+because it is not big enough. When we tried the same command on $eip we got an
+error saying "Value can't be converted to integer".
+13. We are in the for loop inside the fix_array function.
+14. We see that the instruction pointer indicates that the next instruction
+to be executed is a call to hmc_pomona fix. The output is:
+=> 0x40067c <fix_array+19>:	callq  0x400650 <hmc_pomona_fix>
+15. We expect that stepi will take us into the hmc_pomona_fix function call
+which, on our machine, is at memory address 0x400650. nexti should instead
+take us over this function call to the next instruction (add) which here is
+at 0x400683. When we test it out this is indeed what happens!
+16. We see that the line number listed is line 26 in problem2.c. This is 
+last line of the fix_array function at the ending curly brace
+17. Using info registers shows that the value is 0x7fffffffe118	0x7fffffffe118.
+Using the command "p/x *(int *)$rsp" (note the changed register compared to 
+the lab writeup. We thought this might be a type since we are concerned with
+%rsp rather than %ebp...) we get: 
+$4 = 0x4006e7 
+
+Last, the command "x/x $rsp" yielded:
+0x7fffffffe118:	0x004006e7
+showing that the value of the register is pointing to the memory address
+0x4006e7
+18. The stack pointer (%rsp) and the instruction pointer (%rip) both changed.
+The old value of %rsp is 0x7fffffffe118	0x7fffffffe118 and the new value
+is 0x7fffffffe120	0x7fffffffe120. For %rip the old value is 
+0x400693	0x400693 <fix_array+42> and the new value is
+0x4006e7	0x4006e7 <main+83>
+
+Yay.
 
 
 
